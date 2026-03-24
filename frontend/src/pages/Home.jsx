@@ -1,4 +1,6 @@
 import { useState } from "react";
+import ParticleBackground from "../components/ParticleBackground";
+import ScanningAnimation from "../components/ScanningAnimation";
 import FileUpload from "../components/FileUpload";
 import FindingsTable from "../components/FindingsTable";
 import InsightsPanel from "../components/InsightsPanel";
@@ -6,16 +8,6 @@ import LogViewer from "../components/LogViewer";
 import { analyzeText, analyzeFile } from "../api/analyze";
 
 const INPUT_TYPES = ["text", "log", "sql", "chat"];
-
-const SECTION = ({ label, children }) => (
-  <div style={{ marginBottom: 24 }}>
-    <div style={{
-      fontFamily: "var(--mono)", fontSize: 11, color: "var(--text-muted)",
-      marginBottom: 10, letterSpacing: "0.08em",
-    }}>{label}</div>
-    {children}
-  </div>
-);
 
 export default function Home() {
   const [mode, setMode] = useState("text");
@@ -46,175 +38,213 @@ export default function Home() {
   const canRun = loading ? false : mode === "file" ? !!file : !!content.trim();
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg)" }}>
+    <div style={{ minHeight: "100vh", position: "relative" }}>
+      <ParticleBackground />
 
       {/* Header */}
-      <div style={{
+      <header className="fade-up" style={{
+        position: "relative",
+        zIndex: 10,
         borderBottom: "1px solid var(--border)",
-        background: "var(--surface)",
+        background: "rgba(6, 8, 13, 0.8)",
+        backdropFilter: "blur(20px)",
         padding: "0 32px",
         display: "flex",
         alignItems: "center",
-        height: 56,
-        gap: 12,
+        height: 60,
+        gap: 14,
       }}>
-        <span style={{ fontFamily: "var(--mono)", fontSize: 13, color: "var(--accent)", fontWeight: 700 }}>AI//SECURE</span>
-        <span style={{ color: "var(--border)" }}>|</span>
-        <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--text-muted)" }}>DATA INTELLIGENCE PLATFORM</span>
-      </div>
+        {/* Logo glow */}
+        <div style={{ position: "relative" }}>
+          <span style={{
+            fontFamily: "var(--mono)",
+            fontSize: 15,
+            fontWeight: 700,
+            background: "linear-gradient(135deg, var(--accent), var(--cyan))",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            letterSpacing: "0.05em",
+          }}>AI//SECURE</span>
+          <div style={{
+            position: "absolute",
+            inset: "-4px -8px",
+            background: "radial-gradient(ellipse, var(--accent-dim), transparent)",
+            borderRadius: 8,
+            zIndex: -1,
+            filter: "blur(8px)",
+          }} />
+        </div>
+        <div style={{
+          width: 1,
+          height: 20,
+          background: "var(--border)",
+        }} />
+        <span style={{
+          fontFamily: "var(--mono)",
+          fontSize: 10,
+          color: "var(--text-dim)",
+          letterSpacing: "0.18em",
+        }}>DATA INTELLIGENCE PLATFORM</span>
+        <div style={{ flex: 1 }} />
+        <div style={{
+          width: 8,
+          height: 8,
+          borderRadius: "50%",
+          background: "var(--accent)",
+          boxShadow: "0 0 8px var(--accent-glow)",
+          animation: "badge-pulse 2s ease infinite",
+        }} />
+        <span style={{
+          fontFamily: "var(--mono)",
+          fontSize: 10,
+          color: "var(--text-dim)",
+          letterSpacing: "0.1em",
+        }}>SYSTEM ONLINE</span>
+      </header>
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 24px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+      {/* Main Content */}
+      <div className="main-grid" style={{
+        position: "relative",
+        zIndex: 10,
+        maxWidth: 1200,
+        margin: "0 auto",
+        padding: "32px 24px",
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: 28,
+      }}>
+        {/* LEFT — Input Panel */}
+        <div className="fade-up glass" style={{ padding: "28px", alignSelf: "start" }}>
 
-        {/* LEFT — Input */}
-        <div className="fade-up">
-          <SECTION label="INPUT MODE">
-            <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-              {["text", "file"].map(m => (
-                <button key={m} onClick={() => setMode(m)} style={{
-                  padding: "6px 16px",
-                  borderRadius: 6,
-                  border: `1px solid ${mode === m ? "var(--accent)" : "var(--border)"}`,
-                  background: mode === m ? "var(--accent-dim)" : "transparent",
-                  color: mode === m ? "var(--accent)" : "var(--text-muted)",
-                  fontFamily: "var(--mono)",
-                  fontSize: 12,
-                  cursor: "pointer",
-                  transition: "all 0.15s",
-                }}>
-                  {m.toUpperCase()}
-                </button>
-              ))}
-            </div>
+          {/* Input Mode */}
+          <div className="section-label">INPUT MODE</div>
+          <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+            {["text", "file"].map(m => (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                className={`chip ${mode === m ? "active" : ""}`}
+              >
+                {m === "text" ? "✏️" : "📁"} {m.toUpperCase()}
+              </button>
+            ))}
+          </div>
 
-            {mode === "text" && (
-              <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
+          {/* Input Type Chips */}
+          {mode === "text" && (
+            <>
+              <div className="section-label">CONTENT TYPE</div>
+              <div style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap" }}>
                 {INPUT_TYPES.map(t => (
-                  <button key={t} onClick={() => setInputType(t)} style={{
-                    padding: "4px 12px",
-                    borderRadius: 4,
-                    border: `1px solid ${inputType === t ? "var(--blue)" : "var(--border)"}`,
-                    background: inputType === t ? "var(--blue-dim)" : "transparent",
-                    color: inputType === t ? "var(--blue)" : "var(--text-muted)",
-                    fontFamily: "var(--mono)",
-                    fontSize: 11,
-                    cursor: "pointer",
-                    transition: "all 0.15s",
-                  }}>
+                  <button
+                    key={t}
+                    onClick={() => setInputType(t)}
+                    className={`chip-sub ${inputType === t ? "active" : ""}`}
+                  >
                     {t}
                   </button>
                 ))}
               </div>
-            )}
-          </SECTION>
+            </>
+          )}
 
-          <SECTION label={mode === "file" ? "UPLOAD FILE" : "CONTENT"}>
-            {mode === "file"
-              ? <FileUpload onFile={setFile} disabled={loading} />
-              : (
-                <textarea
-                  value={content}
-                  onChange={e => setContent(e.target.value)}
-                  placeholder={`Paste ${inputType} content here...`}
-                  rows={10}
-                  style={{
-                    width: "100%",
-                    background: "var(--surface)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 8,
-                    padding: "12px 14px",
-                    color: "var(--text)",
-                    fontFamily: "var(--mono)",
-                    fontSize: 12,
-                    resize: "vertical",
-                    outline: "none",
-                    lineHeight: 1.7,
-                  }}
-                />
-              )
-            }
-          </SECTION>
+          {/* Content Area */}
+          <div className="section-label">{mode === "file" ? "UPLOAD FILE" : "CONTENT"}</div>
+          {mode === "file"
+            ? <FileUpload onFile={setFile} disabled={loading} />
+            : (
+              <textarea
+                value={content}
+                onChange={e => setContent(e.target.value)}
+                placeholder={`Paste ${inputType} content here for security analysis...`}
+                rows={10}
+                className="input-glass"
+              />
+            )
+          }
 
-          <SECTION label="OPTIONS">
-            <div style={{ display: "flex", gap: 16 }}>
+          {/* Options */}
+          <div style={{ margin: "20px 0" }}>
+            <div className="section-label">OPTIONS</div>
+            <div style={{ display: "flex", gap: 20 }}>
               {[["mask", "Mask Sensitive Data"], ["block_high_risk", "Block High Risk"]].map(([key, label]) => (
-                <label key={key} style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+                <label key={key} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
                   <div
                     onClick={() => setOptions(o => ({ ...o, [key]: !o[key] }))}
-                    style={{
-                      width: 36, height: 20, borderRadius: 10,
-                      background: options[key] ? "var(--accent)" : "var(--border)",
-                      position: "relative", transition: "background 0.2s", cursor: "pointer",
-                    }}
+                    className={`toggle-track ${options[key] ? "on" : "off"}`}
                   >
-                    <div style={{
-                      position: "absolute", top: 3, left: options[key] ? 18 : 3,
-                      width: 14, height: 14, borderRadius: "50%",
-                      background: "white", transition: "left 0.2s",
-                    }} />
+                    <div className="toggle-thumb" style={{ left: options[key] ? 20 : 3 }} />
                   </div>
-                  <span style={{ fontSize: 13, color: "var(--text-muted)" }}>{label}</span>
+                  <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 400 }}>{label}</span>
                 </label>
               ))}
             </div>
-          </SECTION>
+          </div>
 
+          {/* Run Button */}
           <button
             onClick={run}
             disabled={!canRun}
-            style={{
-              width: "100%",
-              padding: "12px",
-              borderRadius: 8,
-              border: "1px solid var(--accent)",
-              background: canRun ? "var(--accent-dim)" : "transparent",
-              color: canRun ? "var(--accent)" : "var(--text-muted)",
-              fontFamily: "var(--mono)",
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: canRun ? "pointer" : "not-allowed",
-              letterSpacing: "0.08em",
-              transition: "all 0.2s",
-              animation: canRun ? "glow-pulse 2.5s ease infinite" : "none",
-            }}
+            className="btn-primary"
+            style={{ width: "100%" }}
           >
-            {loading ? "SCANNING..." : "RUN ANALYSIS"}
+            {loading ? (
+              <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
+                <span style={{
+                  width: 14,
+                  height: 14,
+                  border: "2px solid var(--accent)",
+                  borderTopColor: "transparent",
+                  borderRadius: "50%",
+                  animation: "radar-sweep 0.8s linear infinite",
+                  display: "inline-block",
+                }} />
+                SCANNING…
+              </span>
+            ) : "▶ RUN ANALYSIS"}
           </button>
 
+          {/* Error */}
           {error && (
-            <div style={{
-              marginTop: 12, padding: "10px 14px",
-              background: "var(--red-dim)", border: "1px solid var(--red)",
-              borderRadius: 6, color: "var(--red)", fontFamily: "var(--mono)", fontSize: 12,
-            }}>
-              {error}
+            <div className="error-banner" style={{ marginTop: 14 }}>
+              ⚠ {error}
             </div>
           )}
         </div>
 
-        {/* RIGHT — Results */}
-        <div className="fade-up-1">
+        {/* RIGHT — Results Panel */}
+        <div className="fade-up-1" style={{ alignSelf: "start" }}>
           {result ? (
             <>
-              <SECTION label="INSIGHTS"><InsightsPanel result={result} /></SECTION>
+              <div className="section-label">INSIGHTS</div>
+              <InsightsPanel result={result} />
+
               {result.content_type === "log" && content && (
-                <SECTION label="LOG VIEWER">
+                <div style={{ marginTop: 20 }}>
+                  <div className="section-label">LOG VIEWER</div>
                   <LogViewer content={content} findings={result.findings} />
-                </SECTION>
+                </div>
               )}
-              <SECTION label={`FINDINGS (${result.findings.length})`}>
-                <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, overflow: "hidden" }}>
+
+              <div style={{ marginTop: 20 }}>
+                <div className="section-label">FINDINGS ({result.findings.length})</div>
+                <div className="glass-sm" style={{ overflow: "hidden" }}>
                   <FindingsTable findings={result.findings} />
                 </div>
-              </SECTION>
+              </div>
             </>
           ) : (
             <div style={{
-              height: "100%", minHeight: 300, display: "flex", alignItems: "center",
-              justifyContent: "center", flexDirection: "column", gap: 12,
-              color: "var(--text-muted)", fontFamily: "var(--mono)", fontSize: 12,
+              height: "100%",
+              minHeight: 400,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}>
-              <div style={{ fontSize: 32, opacity: 0.3 }}>⬡</div>
-              <div>AWAITING INPUT</div>
+              <ScanningAnimation
+                size={140}
+                label={loading ? "SCANNING CONTENT…" : "AWAITING INPUT"}
+              />
             </div>
           )}
         </div>

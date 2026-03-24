@@ -1,14 +1,18 @@
-const RISK_STYLE = {
-  critical: { color: "var(--red)",    bg: "var(--red-dim)" },
-  high:     { color: "var(--orange)", bg: "var(--orange-dim)" },
-  medium:   { color: "var(--yellow)", bg: "var(--yellow-dim)" },
-  low:      { color: "var(--blue)",   bg: "var(--blue-dim)" },
-};
+import { useState } from "react";
 
 export default function FindingsTable({ findings }) {
+  const [expanded, setExpanded] = useState(null);
+
   if (!findings?.length) return (
-    <div style={{ color: "var(--text-muted)", fontFamily: "var(--mono)", fontSize: 12, textAlign: "center", padding: 24 }}>
-      NO FINDINGS
+    <div style={{
+      color: "var(--text-dim)",
+      fontFamily: "var(--mono)",
+      fontSize: 12,
+      textAlign: "center",
+      padding: 32,
+      letterSpacing: "0.1em",
+    }}>
+      NO FINDINGS DETECTED
     </div>
   );
 
@@ -16,28 +20,58 @@ export default function FindingsTable({ findings }) {
     <div style={{ overflowX: "auto" }}>
       <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: "var(--mono)", fontSize: 12 }}>
         <thead>
-          <tr style={{ color: "var(--text-muted)", textAlign: "left" }}>
+          <tr>
             {["TYPE", "RISK", "LINE", "VALUE"].map(h => (
-              <th key={h} style={{ padding: "8px 12px", borderBottom: "1px solid var(--border)", fontWeight: 400 }}>{h}</th>
+              <th key={h} style={{
+                padding: "10px 14px",
+                borderBottom: "1px solid var(--border)",
+                fontWeight: 500,
+                color: "var(--text-dim)",
+                fontSize: 10,
+                letterSpacing: "0.12em",
+                textAlign: "left",
+              }}>{h}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {findings.map((f, i) => {
-            const s = RISK_STYLE[f.risk] || RISK_STYLE.low;
+            const isExpanded = expanded === i;
             return (
-              <tr key={i} style={{ borderBottom: "1px solid var(--border)" }}>
-                <td style={{ padding: "10px 12px", color: "var(--text)" }}>{f.type}</td>
-                <td style={{ padding: "10px 12px" }}>
-                  <span style={{
-                    background: s.bg, color: s.color,
-                    padding: "2px 8px", borderRadius: 4, fontSize: 11,
-                  }}>
-                    {f.risk.toUpperCase()}
+              <tr
+                key={i}
+                onClick={() => setExpanded(isExpanded ? null : i)}
+                style={{
+                  borderBottom: "1px solid rgba(48,54,61,0.3)",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
+                  background: isExpanded ? "rgba(0,255,157,0.03)" : "transparent",
+                  animation: `row-glow 0.3s ${i * 0.05}s ease both`,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.02)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = isExpanded ? "rgba(0,255,157,0.03)" : "transparent";
+                }}
+              >
+                <td style={{ padding: "12px 14px", color: "var(--text)" }}>{f.type}</td>
+                <td style={{ padding: "12px 14px" }}>
+                  <span className={`risk-badge ${f.risk}`}>
+                    {f.risk}
                   </span>
                 </td>
-                <td style={{ padding: "10px 12px", color: "var(--text-muted)" }}>{f.line ?? "—"}</td>
-                <td style={{ padding: "10px 12px", color: "var(--text-muted)", maxWidth: 260, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <td style={{ padding: "12px 14px", color: "var(--text-dim)" }}>{f.line ?? "—"}</td>
+                <td style={{
+                  padding: "12px 14px",
+                  color: "var(--text-muted)",
+                  maxWidth: isExpanded ? "none" : 240,
+                  overflow: isExpanded ? "visible" : "hidden",
+                  textOverflow: isExpanded ? "unset" : "ellipsis",
+                  whiteSpace: isExpanded ? "pre-wrap" : "nowrap",
+                  wordBreak: isExpanded ? "break-all" : "normal",
+                  transition: "all 0.2s",
+                }}>
                   {f.value ?? "—"}
                 </td>
               </tr>
