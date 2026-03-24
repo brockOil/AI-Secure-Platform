@@ -1,5 +1,5 @@
 import json
-from mistralai import Mistral
+from mistralai.client import Mistral
 from config import settings
 
 _client = Mistral(api_key=settings.MISTRAL_API_KEY)
