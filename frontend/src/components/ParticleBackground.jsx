@@ -10,8 +10,8 @@ export default function ParticleBackground() {
 
     let animationId;
     let particles = [];
-    const PARTICLE_COUNT = 60;
-    const CONNECTION_DISTANCE = 120;
+    const PARTICLE_COUNT = 110;
+    const CONNECTION_DISTANCE = 110;
     const MOUSE_RADIUS = 180;
     const MOUSE_FORCE = 0.08;
 
@@ -37,8 +37,8 @@ export default function ParticleBackground() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
         this.vx = (Math.random() - 0.5) * 0.4;
-        this.vy = (Math.random() - 0.5) * 0.4;
-        this.baseRadius = Math.random() * 1.5 + 0.5;
+        this.vy = (Math.random() - 0.5) * 0.3;
+        this.baseRadius = Math.random() * 1.0 + 0.3;
         this.radius = this.baseRadius;
         this.baseOpacity = Math.random() * 0.5 + 0.2;
         this.opacity = this.baseOpacity;
@@ -80,15 +80,10 @@ export default function ParticleBackground() {
         ctx.fillStyle = `rgba(0, 255, 157, ${this.opacity})`;
         ctx.fill();
 
-        // glow
+        // Optimized glow: just draw an overlapping slightly transparent circle
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius * 3, 0, Math.PI * 2);
-        const gradient = ctx.createRadialGradient(
-          this.x, this.y, 0, this.x, this.y, this.radius * 3
-        );
-        gradient.addColorStop(0, `rgba(0, 255, 157, ${this.opacity * 0.3})`);
-        gradient.addColorStop(1, "rgba(0, 255, 157, 0)");
-        ctx.fillStyle = gradient;
+        ctx.arc(this.x, this.y, this.radius * 2.8, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 255, 157, ${this.opacity * 0.2})`;
         ctx.fill();
       }
     }
@@ -104,7 +99,13 @@ export default function ParticleBackground() {
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
+          // Optimization: skip early if out of bounds horizontally
+          if (Math.abs(dx) > CONNECTION_DISTANCE) continue;
+
           const dy = particles[i].y - particles[j].y;
+          // Optimization: skip early if out of bounds vertically
+          if (Math.abs(dy) > CONNECTION_DISTANCE) continue;
+
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < CONNECTION_DISTANCE) {
@@ -137,8 +138,25 @@ export default function ParticleBackground() {
       }
     };
 
+    const drawMouseGlow = () => {
+      if (mouse.x !== -1000 && mouse.y !== -1000) {
+        ctx.beginPath();
+        const gradient = ctx.createRadialGradient(
+          mouse.x, mouse.y, 0, mouse.x, mouse.y, 400
+        );
+        gradient.addColorStop(0, "rgba(0, 255, 157, 0.15)");
+        gradient.addColorStop(0.4, "rgba(0, 212, 255, 0.05)");
+        gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = gradient;
+        ctx.arc(mouse.x, mouse.y, 400, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    };
+
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      drawMouseGlow();
 
       particles.forEach((p) => {
         p.update();

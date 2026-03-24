@@ -106,15 +106,21 @@ export default function Home() {
       <div className="main-grid" style={{
         position: "relative",
         zIndex: 10,
-        maxWidth: 1200,
-        margin: "0 auto",
-        padding: "32px 24px",
+        height: "calc(100vh - 60px)",
+        width: "100%",
+        padding: "24px",
         display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: 28,
+        gridTemplateColumns: "400px 1fr",
+        gap: 24,
       }}>
         {/* LEFT — Input Panel */}
-        <div className="fade-up glass" style={{ padding: "28px", alignSelf: "start" }}>
+        <div className="fade-up glass" style={{ 
+          padding: "28px", 
+          display: "flex", 
+          flexDirection: "column",
+          height: "100%",
+          overflowY: "auto"
+        }}>
 
           {/* Input Mode */}
           <div className="section-label">INPUT MODE</div>
@@ -213,7 +219,13 @@ export default function Home() {
         </div>
 
         {/* RIGHT — Results Panel */}
-        <div className="fade-up-1" style={{ alignSelf: "start" }}>
+        <div className="fade-up-1 glass" style={{ 
+          padding: "28px", 
+          display: "flex", 
+          flexDirection: "column",
+          height: "100%",
+          overflowY: "auto"
+        }}>
           {result ? (
             <>
               <div className="section-label">INSIGHTS</div>
