@@ -27,6 +27,11 @@ async def parse_upload(file: UploadFile) -> tuple[str, str]:
             doc = docx.Document(io.BytesIO(raw_bytes))
             for para in doc.paragraphs:
                 content += para.text + "\n"
+            for table in doc.tables:
+                for row in table.rows:
+                    for cell in row.cells:
+                        for para in cell.paragraphs:
+                            content += para.text + "\n"
         except Exception as e:
             content = f"Error reading DOCX: {str(e)}"
     else:
@@ -34,7 +39,7 @@ async def parse_upload(file: UploadFile) -> tuple[str, str]:
         content = raw_bytes.decode("utf-8", errors="replace")
 
     if ext in (".log", ".txt"):
-        return content, "log" if ext == ".log" else "file"
+        return content, "log"
 
     return content, "file"
 

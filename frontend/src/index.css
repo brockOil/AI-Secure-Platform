@@ -9,11 +9,11 @@
   --surface-solid: #0d1117;
   --surface-2: rgba(22, 27, 34, 0.8);
   --border: rgba(48, 54, 61, 0.6);
-  --border-glow: rgba(0, 255, 157, 0.15);
-  --accent: #00ff9d;
-  --accent-dim: rgba(0, 255, 157, 0.08);
-  --accent-glow: rgba(0, 255, 157, 0.3);
-  --accent-mid: rgba(0, 255, 157, 0.5);
+  --border-glow: rgba(255, 77, 106, 0.15);
+  --accent: #ff4d6a;
+  --accent-dim: rgba(255, 77, 106, 0.08);
+  --accent-glow: rgba(255, 77, 106, 0.3);
+  --accent-mid: rgba(255, 77, 106, 0.5);
   --cyan: #00d4ff;
   --cyan-dim: rgba(0, 212, 255, 0.1);
   --red: #ff4d6a;
@@ -188,7 +188,7 @@ body {
 .btn-primary:hover:not(:disabled) {
   box-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-dim);
   transform: translateY(-1px);
-  background: linear-gradient(135deg, rgba(0,255,157,0.15), var(--accent-dim));
+  background: linear-gradient(135deg, rgba(255,77,106,0.15), var(--accent-dim));
 }
 
 .btn-primary:disabled {

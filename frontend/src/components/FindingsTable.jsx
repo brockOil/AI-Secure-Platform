@@ -45,14 +45,14 @@ export default function FindingsTable({ findings }) {
                   borderBottom: "1px solid rgba(48,54,61,0.3)",
                   cursor: "pointer",
                   transition: "background 0.2s",
-                  background: isExpanded ? "rgba(0,255,157,0.03)" : "transparent",
+                  background: isExpanded ? "rgba(255,77,106,0.03)" : "transparent",
                   animation: `row-glow 0.3s ${i * 0.05}s ease both`,
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = "rgba(255,255,255,0.02)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = isExpanded ? "rgba(0,255,157,0.03)" : "transparent";
+                  e.currentTarget.style.background = isExpanded ? "rgba(255,77,106,0.03)" : "transparent";
                 }}
               >
                 <td style={{ padding: "12px 14px", color: "var(--text)" }}>{f.type}</td>

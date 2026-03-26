@@ -77,13 +77,13 @@ export default function ParticleBackground() {
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 255, 157, ${this.opacity})`;
+        ctx.fillStyle = `rgba(255, 77, 106, ${this.opacity})`;
         ctx.fill();
 
         // Optimized glow: just draw an overlapping slightly transparent circle
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius * 2.8, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 255, 157, ${this.opacity * 0.2})`;
+        ctx.fillStyle = `rgba(255, 77, 106, ${this.opacity * 0.2})`;
         ctx.fill();
       }
     }
@@ -113,7 +113,7 @@ export default function ParticleBackground() {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(0, 255, 157, ${opacity})`;
+            ctx.strokeStyle = `rgba(255, 77, 106, ${opacity})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -144,7 +144,7 @@ export default function ParticleBackground() {
         const gradient = ctx.createRadialGradient(
           mouse.x, mouse.y, 0, mouse.x, mouse.y, 400
         );
-        gradient.addColorStop(0, "rgba(0, 255, 157, 0.15)");
+        gradient.addColorStop(0, "rgba(255, 77, 106, 0.15)");
         gradient.addColorStop(0.4, "rgba(0, 212, 255, 0.05)");
         gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
         ctx.fillStyle = gradient;
