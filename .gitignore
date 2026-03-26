@@ -30,3 +30,6 @@ venv
 .env.*.local
 .env.local
 
+*.pdf
+*.docx
+

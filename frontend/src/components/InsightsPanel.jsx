@@ -42,7 +42,7 @@ export default function InsightsPanel({ result }) {
         gap: 24,
         borderColor: `${color}33`,
       }}>
-        <RiskGauge score={risk_score} maxScore={20} riskLevel={risk_level} />
+        <RiskGauge score={risk_score} maxScore={100} riskLevel={risk_level} />
 
         <div style={{ flex: 1 }}>
           <div style={{
@@ -114,7 +114,7 @@ export default function InsightsPanel({ result }) {
                 alignItems: "flex-start",
                 padding: "8px 12px",
                 borderRadius: 8,
-                background: "rgba(0,255,157,0.03)",
+                background: "rgba(255,77,106,0.03)",
                 borderLeft: "2px solid var(--accent)",
               }}>
                 <span style={{

@@ -14,19 +14,29 @@ export default function Home() {
   const [inputType, setInputType] = useState("text");
   const [content, setContent] = useState("");
   const [file, setFile] = useState(null);
-  const [options, setOptions] = useState({ mask: true, block_high_risk: true });
+  const [options, setOptions] = useState({ mask: true, block_high_risk: false });
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [fileContent, setFileContent] = useState("");
 
   const run = async () => {
     setLoading(true);
     setError(null);
     setResult(null);
+    setFileContent("");
     try {
-      const res = mode === "file"
-        ? await analyzeFile(file, options)
-        : await analyzeText({ input_type: inputType, content, options });
+      let res;
+      if (mode === "file") {
+        // Read file text for LogViewer display
+        if (file) {
+          const text = await file.text();
+          setFileContent(text);
+        }
+        res = await analyzeFile(file, options);
+      } else {
+        res = await analyzeText({ input_type: inputType, content, options });
+      }
       setResult(res);
     } catch (e) {
       setError(e.response?.data?.detail || e.message);
@@ -231,10 +241,10 @@ export default function Home() {
               <div className="section-label">INSIGHTS</div>
               <InsightsPanel result={result} />
 
-              {result.content_type === "log" && content && (
+              {(result.content_type === "log" || result.content_type === "logs") && (content || fileContent) && (
                 <div style={{ marginTop: 20 }}>
                   <div className="section-label">LOG VIEWER</div>
-                  <LogViewer content={content} findings={result.findings} />
+                  <LogViewer content={content || fileContent} findings={result.findings} />
                 </div>
               )}
 

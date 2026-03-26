@@ -39,7 +39,7 @@ async def parse_upload(file: UploadFile) -> tuple[str, str]:
         content = raw_bytes.decode("utf-8", errors="replace")
 
     if ext in (".log", ".txt"):
-        return content, "log" if ext == ".log" else "file"
+        return content, "log"
 
     return content, "file"
 

@@ -1,16 +1,16 @@
 from core.detector import RawFinding
 
 _SCORE_MAP = {
-    "critical": 10,
-    "high": 7,
-    "medium": 4,
-    "low": 1,
+    "critical": 50,
+    "high": 35,
+    "medium": 20,
+    "low": 5,
 }
 
 _LEVEL_THRESHOLDS = [
-    (15, "critical"),
-    (10, "high"),
-    (5,  "medium"),
+    (75, "critical"),
+    (50, "high"),
+    (25,  "medium"),
     (0,  "low"),
 ]
 
@@ -40,12 +40,12 @@ def score(findings: list[RawFinding]) -> tuple[int, str]:
             for s in secrets:
                 if (i.line and i.line == s.line) or abs(i.start - s.start) < 100:
                     override_level = "critical"
-                    total = max(total, 20)
+                    total = max(total, 100)
                     break
             if override_level:
                 break
 
-    total = min(total, 20)
+    total = min(total, 100)
     
     if override_level:
         return total, override_level

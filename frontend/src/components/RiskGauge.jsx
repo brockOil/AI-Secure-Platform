@@ -4,10 +4,10 @@ const RISK_COLORS = {
   critical: "#ff4d6a",
   high: "#ff9f43",
   medium: "#ffd93d",
-  low: "#00ff9d",
+  low: "#ffb3c6",
 };
 
-export default function RiskGauge({ score = 0, maxScore = 20, riskLevel = "low" }) {
+export default function RiskGauge({ score = 0, maxScore = 100, riskLevel = "low" }) {
   const [offset, setOffset] = useState(251.2);
   const percentage = Math.min(score / maxScore, 1);
   const circumference = 2 * Math.PI * 40;
