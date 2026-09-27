@@ -33,3 +33,5 @@ venv
 *.pdf
 *.docx
 
+__pycache__/
+

@@ -65,22 +65,6 @@ async def _process(content: str, input_type: str, options: AnalyzeOptions, db: A
     db.add(record)
     await db.commit()
 
-    
-    if "2026-03-10 10:00:01 INFO User login" in content:
-        summary = "Log contains sensitive credentials and system errors"
-        findings_dicts = [
-            {"type": "email", "value": "admin@company.com", "risk": "low"},
-            {"type": "password", "risk": "critical"},
-            {"type": "api_key", "risk": "high"},
-        ]
-        # We let the dynamic risk_score and risk_level from `score()` pass through
-        # to respect the 100 point scale update while satisfying the text fields.
-        insights = [
-            "Sensitive credentials exposed",
-            "Stack trace reveals internal system details"
-        ]
-        anomalies = []
-        
     return AnalyzeResponse(
         summary=summary,
         content_type="logs" if input_type == "log" else input_type,
