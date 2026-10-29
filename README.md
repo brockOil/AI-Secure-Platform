@@ -1,5 +1,10 @@
 # AI Secure Data Intelligence Platform
+## 🚀 Live Demo
 
+- **Live Website:** https://ai-secure-platform-frontend.onrender.com
+- **API Documentation:** https://ai-secure-platform-0d1w.onrender.com/docs
+
+  
 A robust, full-stack application for analyzing, classifying, and securing sensitive data using advanced AI models. It provides deep insights into structured and unstructured data while ensuring privacy and compliance through intelligent masking and risk assessment.
 
 ## 🚀 Features
@@ -130,7 +135,7 @@ AI-Secure-Platform/
 │   ├── package.json        # Node.js dependencies
 │   ├── tailwind.config.js  # Styling configuration
 │   └── Dockerfile          # Frontend Docker config
-└── docker-compose.yml      # Multi-container orchestration
+└── docker-compose.yml      # Multiz-container orchestration
 ```
 
 ## 🔒 Security & Privacy
