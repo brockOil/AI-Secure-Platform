@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+sqlalchemy[asyncio]
+asyncpg
+pydantic
+pydantic-settings
+python-multipart
+mistralai
+python-dotenv
+aiofiles
+python-docx
+PyMuPDF
