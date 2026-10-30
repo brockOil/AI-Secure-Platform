@@ -9,7 +9,7 @@ A robust, full-stack application for analyzing, classifying, and securing sensit
 
 ## 🚀 Features
 
-- **AI-Powered Data Analysis:** Utilizes Mistral AI to scan logs, texts, and files for security vulnerabilities and anomalies.
+- **AI-Powered Data Analysis:** Utilizes Google Gemini to scan logs, texts, and files for security vulnerabilities and anomalies.
 - **Sensitive Data Masking:** Automatically detects and redacts PII and sensitive information before processing or storage.
 - **Modern UI/UX:** A responsive, interactive dashboard built with React and Tailwind CSS featuring glassmorphism design.
 - **Robust Backend:** High-performance REST API powered by FastAPI and PostgreSQL.
@@ -27,7 +27,7 @@ A robust, full-stack application for analyzing, classifying, and securing sensit
 - FastAPI & Uvicorn
 - PostgreSQL (asyncpg)
 - SQLAlchemy (asyncio)
-- Mistral AI Python Client
+- Google Gemini (google-genai) Python Client
 
 **Deployment:**
 - Docker & Docker Compose (local / self-hosted)
@@ -56,7 +56,7 @@ Create `.env` files based on the provided examples.
 
 **Root level (`/.env`):**
 ```ini
-MISTRAL_API_KEY=your_mistral_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
 POSTGRES_USER=aiplatform
 POSTGRES_PASSWORD=aiplatform
 POSTGRES_DB=aiplatform
@@ -65,7 +65,7 @@ POSTGRES_DB=aiplatform
 **Backend level (`/backend/.env`):**
 ```ini
 DATABASE_URL=postgresql+asyncpg://aiplatform:aiplatform@localhost:5434/aiplatform
-MISTRAL_API_KEY=your_mistral_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 ---
@@ -147,7 +147,7 @@ This repo deploys as a single Vercel project using [Vercel Services](https://ver
 
 2. **Environment variables:** set these in Vercel → Settings → Environment Variables:
    - `DATABASE_URL` — the Supabase string above
-   - `MISTRAL_API_KEY` — same value as local `.env`
+   - `GEMINI_API_KEY` — same value as local `.env`
 
 3. **Deploy** via the Git integration (push → auto-deploy) or `npx vercel --prod` from the repo root. Keep Root Directory at `./` in project settings — the `services` config in `vercel.json` expects to see the whole repo, not just `frontend/`.
 

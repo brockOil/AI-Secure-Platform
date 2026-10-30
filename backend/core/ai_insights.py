@@ -1,11 +1,12 @@
 import json
 import logging
-from mistralai.client import Mistral
-from mistralai.client.errors import SDKError
+from google import genai
+from google.genai import types
+from google.genai.errors import APIError
 from config import settings
 
 logger = logging.getLogger(__name__)
-_client = Mistral(api_key=settings.MISTRAL_API_KEY)
+_client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
 def get_insights(findings: list[dict], content_snippet: str, anomalies: list[str], input_type: str = "text") -> tuple[str, list[str]]:
     findings_text = "\n".join(
@@ -37,16 +38,16 @@ SUMMARY: <one sentence describing overall security posture>
 INSIGHTS: <valid JSON array of up to 5 concise insight strings>"""
 
     try:
-        response = _client.chat.complete(
-            model="mistral-small-latest",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=512,
+        response = _client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(max_output_tokens=1024),
         )
-    except SDKError:
-        logger.exception("Mistral insights call failed; returning findings without AI summary")
+    except APIError:
+        logger.exception("Gemini insights call failed; returning findings without AI summary")
         return "Analysis complete (AI insights unavailable).", []
 
-    raw = response.choices[0].message.content.strip()
+    raw = (response.text or "").strip()
     summary = ""
     insights: list[str] = []
 
