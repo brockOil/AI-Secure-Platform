@@ -39,7 +39,7 @@ INSIGHTS: <valid JSON array of up to 5 concise insight strings>"""
 
     try:
         response = _client.models.generate_content(
-            model="gemini-2.5-flash",
+            model=settings.GEMINI_MODEL,
             contents=prompt,
             config=types.GenerateContentConfig(max_output_tokens=1024),
         )
