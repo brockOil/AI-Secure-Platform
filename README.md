@@ -1,7 +1,7 @@
 # AI Secure Data Intelligence Platform
 ## 🚀 Live Demo
 
-- **Live Website:** https://ai-secure-platform-frontend.onrender.com
+- **Live Website:** https://ai-secure-platform-sam.vercel.app
 - **API Documentation:** https://ai-secure-platform-0d1w.onrender.com/docs
 
   
