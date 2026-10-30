@@ -13,10 +13,10 @@ async def parse_upload(file: UploadFile) -> tuple[str, str]:
     # Try parsing based on extension
     if ext == ".pdf":
         try:
-            import fitz
-            doc = fitz.open(stream=raw_bytes, filetype="pdf")
-            for page in doc:
-                text = page.get_text()
+            from pypdf import PdfReader
+            reader = PdfReader(io.BytesIO(raw_bytes))
+            for page in reader.pages:
+                text = page.extract_text()
                 if text:
                     content += text + "\n"
         except Exception as e:

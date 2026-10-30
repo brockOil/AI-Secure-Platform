@@ -1,5 +1,5 @@
 fastapi
-uvicorn[standard]
+uvicorn
 sqlalchemy[asyncio]
 asyncpg
 pydantic
@@ -9,4 +9,4 @@ mistralai
 python-dotenv
 aiofiles
 python-docx
-PyMuPDF
+pypdf
