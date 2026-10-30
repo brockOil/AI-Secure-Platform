@@ -30,8 +30,9 @@ A robust, full-stack application for analyzing, classifying, and securing sensit
 - Mistral AI Python Client
 
 **Deployment:**
-- Docker & Docker Compose
-- Nginx (Frontend proxy)
+- Docker & Docker Compose (local / self-hosted)
+- Vercel Services (frontend + backend as a single project)
+- Supabase (managed Postgres for the Vercel deployment)
 
 ## 📋 Prerequisites
 
@@ -117,6 +118,39 @@ npm run dev
 
 ---
 
+## ☁️ Deploying to Vercel
+
+This repo deploys as a single Vercel project using [Vercel Services](https://vercel.com/docs/services): `frontend` (Vite static build) and `backend` (FastAPI) are declared in the root `vercel.json`, with `backend` exposed publicly only at `/api/*` and `frontend` serving everything else. No per-service dashboard configuration is needed — both services build from the same project.
+
+1. **Database:** local Docker Postgres isn't reachable from Vercel's serverless functions. Use a managed Postgres instead — this project is set up for [Supabase](https://supabase.com/). In the Supabase dashboard, grab the **Transaction pooler** connection string (Settings → Database → Connect → Connection string → Transaction pooler, port `6543`), then adapt it:
+   - scheme `postgresql://` → `postgresql+asyncpg://` (SQLAlchemy needs the async driver explicit, otherwise it defaults to `psycopg`, which isn't installed)
+   - append `?ssl=require` (Supabase enforces SSL; `asyncpg` needs this spelled `ssl=require`, not the libpq-style `sslmode=require`)
+   - if the password contains special characters (`%`, `@`, `:`, `/`, etc.), percent-encode them (e.g. a literal `%` becomes `%25`) — or avoid the hassle entirely by resetting the DB password to an alphanumeric-only string
+
+   Final shape:
+   ```
+   postgresql+asyncpg://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres?ssl=require
+   ```
+   Run the schema once in Supabase's SQL Editor:
+   ```sql
+   create table if not exists public.analyses (
+     id text primary key,
+     created_at timestamptz not null default now(),
+     input_type text not null,
+     risk_level text not null,
+     risk_score integer not null,
+     findings jsonb not null,
+     insights jsonb not null,
+     action text not null
+   );
+   ```
+
+2. **Environment variables:** set these in Vercel → Settings → Environment Variables:
+   - `DATABASE_URL` — the Supabase string above
+   - `MISTRAL_API_KEY` — same value as local `.env`
+
+3. **Deploy** via the Git integration (push → auto-deploy) or `npx vercel --prod` from the repo root. Keep Root Directory at `./` in project settings — the `services` config in `vercel.json` expects to see the whole repo, not just `frontend/`.
+
 ## 📁 Project Structure
 
 ```
@@ -135,7 +169,8 @@ AI-Secure-Platform/
 │   ├── package.json        # Node.js dependencies
 │   ├── tailwind.config.js  # Styling configuration
 │   └── Dockerfile          # Frontend Docker config
-└── docker-compose.yml      # Multiz-container orchestration
+├── docker-compose.yml      # Multi-container orchestration
+└── vercel.json             # Vercel Services config (frontend + backend)
 ```
 
 ## 🔒 Security & Privacy
